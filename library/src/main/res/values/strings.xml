@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">library</string>
+    <string name="facebook_app_id">override with a real id</string>
+    <string name="social_auth_prefs">social_auth_prefs</string>
+</resources>
