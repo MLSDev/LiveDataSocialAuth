@@ -3,7 +3,9 @@ buildscript {
         jcenter()
     }
     dependencies {
+        //noinspection GradleDependency
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        //noinspection GradleDependency
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
@@ -21,7 +23,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "0.1.0"
+        versionName "0.2.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -49,7 +51,7 @@ ext {
     siteUrl = 'https://github.com/MLSDev/LiveDataSocialAuth'
     gitUrl = 'https://github.com/MLSDev/LiveDataSocialAuth.git'
 
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.2.0'
 
     developerId = 'mlsdev'
     developerName = 'MLSDev'
@@ -67,6 +69,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:4.41.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

@@ -7,10 +7,30 @@
     android:padding="35dp">
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_display_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_first_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_last_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_auth_provider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Signed in with " />
+        android:text="@string/template_signed_in_with" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_log_out"

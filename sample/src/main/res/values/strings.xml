@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">LiveDataSocialAuth</string>
     <string name="facebook_app_id">2399967120248573</string>
+    <string name="template_signed_in_with">Signed in with %1$s</string>
+    <string name="template_id">id: %1$s</string>
+    <string name="template_display_name">display name: %1$s</string>
+    <string name="template_first_name">first name: %1$s</string>
+    <string name="template_last_name">last name: %1$s</string>
 </resources>

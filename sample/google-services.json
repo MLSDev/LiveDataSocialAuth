@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "659203926601",
+    "firebase_url": "https://livadatasocialauth.firebaseio.com",
+    "project_id": "livadatasocialauth",
+    "storage_bucket": "livadatasocialauth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659203926601:android:3c6b814a7ffc7892",
+        "android_client_info": {
+          "package_name": "com.mlsdev.livedatasocialauth.sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "659203926601-g431rcl4dvsv802km62dkhhqqeio57he.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mlsdev.livedatasocialauth.sample",
+            "certificate_hash": "672934378652f0608eda55cc9781692244382354"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-RB4zFyGkJyuDqMFHGlHi7sfD0ZG3_Fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "659203926601-fsnm6aeu2egvgd3vqdcducfqb0mjkqe0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

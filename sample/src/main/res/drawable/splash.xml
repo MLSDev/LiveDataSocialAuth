@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+
+    <item android:drawable="@android:color/white" />
+
+    <item
+        android:drawable="@drawable/ic_google"
+        android:gravity="center"
+        android:right="30dp" />
+    <item
+        android:drawable="@drawable/ic_facebook"
+        android:gravity="center"
+        android:left="30dp" />
+
+</layer-list>

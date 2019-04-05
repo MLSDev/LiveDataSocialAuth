@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
                 .observe(this, Observer {
                     if (it.isSuccess) {
                         startActivity(Intent(this, LogOutActivity::class.java))
+                        finish()
                         Log.d("Facebook.SignIn", "id:           ${it.account?.id}")
                         Log.d("Facebook.SignIn", "email:        ${it.account?.email}")
                         Log.d("Facebook.SignIn", "display name: ${it.account?.displayName}")
@@ -48,7 +49,13 @@ class MainActivity : AppCompatActivity() {
                 .signIn()
                 .observe(this, Observer {
                     if (it.isSuccess) {
-
+                        startActivity(Intent(this, LogOutActivity::class.java))
+                        finish()
+                        Log.d("Google.SignIn", "id:           ${it.account?.id}")
+                        Log.d("Google.SignIn", "email:        ${it.account?.email}")
+                        Log.d("Google.SignIn", "display name: ${it.account?.displayName}")
+                        Log.d("Google.SignIn", "first name:   ${it.account?.firstName}")
+                        Log.d("Google.SignIn", "last name:    ${it.account?.lastName}")
                     } else {
                         Toast.makeText(
                             this, it.exception?.message
@@ -57,10 +64,5 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         }
-
-//        SocialAuthManager.signOut(this)
-//                .observe(this, Observer {
-//
-//                })
     }
 }
