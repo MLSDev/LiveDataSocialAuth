@@ -1,5 +1,8 @@
 # Changelog
 
+## `0.3.0` - 2019-04-11
+### Added
+
 ## `0.2.0` - 2019-04-05
 ### Added
 - Simple Google auth (without the `smartlock` options)
