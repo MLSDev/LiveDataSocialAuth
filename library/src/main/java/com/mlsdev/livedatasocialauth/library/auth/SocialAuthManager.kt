@@ -19,12 +19,12 @@ import kotlinx.coroutines.launch
 
 object SocialAuthManager {
     private val context = App.contextReference
-    private val sharedPreferences: SharedPreferences?
     private val currentAccountLiveData = MutableLiveData<Account>()
+    val sharedPreferences: SharedPreferences?
 
     init {
         sharedPreferences = context.get()
-                ?.getSharedPreferences(context.get()?.getString(R.string.social_auth_prefs), Context.MODE_PRIVATE)
+            ?.getSharedPreferences(context.get()?.getString(R.string.social_auth_prefs), Context.MODE_PRIVATE)
     }
 
     fun signOut(activity: FragmentActivity): LiveData<Status> {
@@ -35,9 +35,7 @@ object SocialAuthManager {
 
         return status.apply {
             GlobalScope.launch(Dispatchers.Main) {
-                val authProvider = getCurrentAccountSync()?.authProvider
-
-                when (authProvider) {
+                when (getCurrentAccountSync()?.authProvider) {
                     AuthProvider.FACEBOOK -> status.addSource(facebookAuth.signOut()) { status.postValue(it) }
                     AuthProvider.GOOGLE -> status.addSource(googleAuth.signOut()) { status.postValue(it) }
                     else -> {
@@ -50,7 +48,7 @@ object SocialAuthManager {
     }
 
     private fun getCurrentAccountSync(): Account? =
-            sharedPreferences?.getString(AUTH_ACCOUNT_KEY, null)?.let { JsonParser.parseAccountJson(it) }
+        sharedPreferences?.getString(AUTH_ACCOUNT_KEY, null)?.let { JsonParser.parseAccountJson(it) }
 
     fun getCurrentAccount(): LiveData<Account> {
         GlobalScope.launch(Dispatchers.Main) {
@@ -63,18 +61,18 @@ object SocialAuthManager {
     fun saveAccount(account: Account) {
         GlobalScope.launch(Dispatchers.Main) {
             sharedPreferences
-                    ?.edit()
-                    ?.putString(AUTH_ACCOUNT_KEY, JsonParser.accountToJson(account))
-                    ?.apply()
+                ?.edit()
+                ?.putString(AUTH_ACCOUNT_KEY, JsonParser.accountToJson(account))
+                ?.apply()
         }
     }
 
     fun removeCurrentAccount() {
         GlobalScope.launch(Dispatchers.Main) {
             sharedPreferences
-                    ?.edit()
-                    ?.remove(AUTH_ACCOUNT_KEY)
-                    ?.apply()
+                ?.edit()
+                ?.remove(AUTH_ACCOUNT_KEY)
+                ?.apply()
         }
     }
 }

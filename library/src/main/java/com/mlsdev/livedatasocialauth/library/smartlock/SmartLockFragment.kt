@@ -1,5 +1,8 @@
 package com.mlsdev.livedatasocialauth.library.smartlock
 
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -8,13 +11,17 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.CredentialRequest
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
+import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 import com.mlsdev.livedatasocialauth.library.common.Status
+import com.mlsdev.livedatasocialauth.library.util.JsonParser
 
 class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     private lateinit var smartLockAction: SmartLockAction
     private lateinit var credentialRequest: CredentialRequest
     private var credential: Credential? = null
+    private var smartLockOptions: SmartLockOptions? = null
     private var disableAutoSignIn: Boolean = false
     private val credentialRequestResult = MutableLiveData<CredentialRequestResult>()
     private val status = MutableLiveData<Status>()
@@ -32,6 +39,10 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
             fragment.disableAutoSignIn = smartLockBuilder.disableAutoSignIn
             return fragment
         }
+
+        const val REQUEST_CODE_SAVE = 1
+        const val REQUEST_CODE_SAVE_INTERNAL = 2
+        const val REQUEST_CODE_READ = 3
     }
 
     override fun onConnected(data: Bundle?) {
@@ -57,12 +68,36 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         if (disableAutoSignIn)
             Auth.CredentialsApi.disableAutoSignIn(credentialsApiClient)
 
-        
-        TODO("implement")
+
+        Auth.CredentialsApi.request(credentialsApiClient, credentialRequest).setResultCallback {
+            credentialRequestResult.postValue(it)
+        }
     }
 
     private fun saveCredentialsOnConnected() {
-        TODO("implement")
+        Auth.CredentialsApi.save(credentialsApiClient, credential).setResultCallback { saveStatus ->
+            when {
+                saveStatus.isSuccess -> {
+                    credentialsApiClient.disconnect()
+                    smartLockOptions?.let {
+                        SocialAuthManager.sharedPreferences?.edit()
+                            ?.putString(JsonParser.SMART_LOCK_OPTIONS_KEY, JsonParser.smartLockOptionsToJson(it))
+                            ?.apply()
+                    }
+                    status.postValue(Status(true, "User credentials have been saved", CommonStatusCodes.SUCCESS))
+                }
+                saveStatus.hasResolution() -> {
+                    try {
+                        saveStatus.startResolutionForResult(activity!!, REQUEST_CODE_SAVE)
+                    } catch (exception: IntentSender.SendIntentException) {
+                        status.postValue(Status(false, exception.message ?: "", CommonStatusCodes.ERROR))
+                    }
+                }
+                else -> {
+                    credentialsApiClient.disconnect()
+                }
+            }
+        }
     }
 
     private fun deleteCredentialsOnConnected() {
@@ -93,8 +128,10 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         credentialsApiClient.connect()
     }
 
-    fun saveCredentials(): LiveData<Status> {
+    fun saveCredentials(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> {
         smartLockAction = SmartLockAction.SAVE
+        this.credential = credential
+        this.smartLockOptions = smartLockOptions
         credentialsApiClient.connect()
         return status
     }
@@ -110,6 +147,26 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         smartLockAction = SmartLockAction.DISABLE_AUTO_SIGN_IN
         credentialsApiClient.connect()
         return status
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val isSuccess = resultCode == Activity.RESULT_OK
+
+        when (requestCode) {
+            REQUEST_CODE_READ -> TODO()
+            REQUEST_CODE_SAVE -> {
+                status.postValue(
+                    Status(
+                        isSuccess,
+                        if (isSuccess) "User credentials have been saved" else "Error",
+                        if (isSuccess) CommonStatusCodes.SUCCESS else CommonStatusCodes.ERROR
+                    )
+                )
+                credentialsApiClient.disconnect()
+            }
+            REQUEST_CODE_SAVE_INTERNAL -> TODO()
+        }
     }
 
 }

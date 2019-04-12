@@ -55,6 +55,11 @@ class GoogleAuth private constructor(
             return this
         }
 
+        fun enableSmartLock(): Builder {
+            authConditions.permissions.add(AuthConditions.Key.ENABLE_SMART_LOCK.value)
+            return this
+        }
+
         override fun build(): SocialAuth {
             return GoogleAuth(authConditions, activityReference)
         }

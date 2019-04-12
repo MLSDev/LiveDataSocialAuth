@@ -2,24 +2,27 @@ package com.mlsdev.livedatasocialauth.library.smartlock
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
+import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.CredentialRequest
 import com.google.android.gms.auth.api.credentials.IdentityProviders
+import com.mlsdev.livedatasocialauth.library.common.Status
 import java.lang.ref.WeakReference
 
 class SmartLock private constructor(private val builder: Builder) {
+
+    private val fragment: SmartLockFragment by lazy { getSmartLockFragment() }
 
     companion object {
         const val TAG = "smart.lock.fragment"
     }
 
+    fun saveCredential(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> =
+        fragment.saveCredentials(credential, smartLockOptions)
+
     class Builder(val activityReference: WeakReference<FragmentActivity>) {
         var disableAutoSignIn: Boolean = false
         val credentialsRequestBuilder = CredentialRequest.Builder().apply { setAccountTypes(IdentityProviders.GOOGLE) }
-
-        fun setPasswordLoginSupported(supported: Boolean): Builder {
-            credentialsRequestBuilder.setPasswordLoginSupported(true)
-            return this
-        }
 
         fun setAccountTypes(vararg types: String): Builder {
             credentialsRequestBuilder.setAccountTypes(*types)

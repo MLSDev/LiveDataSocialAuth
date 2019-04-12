@@ -2,6 +2,7 @@ package com.mlsdev.livedatasocialauth.library.util
 
 import com.mlsdev.livedatasocialauth.library.common.Account
 import com.mlsdev.livedatasocialauth.library.common.AuthProvider
+import com.mlsdev.livedatasocialauth.library.smartlock.SmartLockOptions
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -13,7 +14,10 @@ object JsonParser {
     private const val FIRST_NAME_KEY = "first_name"
     private const val LAST_NAME_KEY = "last_name"
     private const val AUTH_PROVIDER_KEY = "auth_provider"
+    private const val REQUEST_EMAIL = "request_email"
+    private const val REQUEST_PROFILE = "request_profile"
     const val AUTH_ACCOUNT_KEY = "auth_account"
+    const val SMART_LOCK_OPTIONS_KEY = "smart_lock_options"
 
     fun accountToJson(account: Account): String {
         val accountJsonObject = JSONObject()
@@ -45,4 +49,25 @@ object JsonParser {
         return null
     }
 
+    fun smartLockOptionsToJson(smartLockOptions: SmartLockOptions): String {
+        val jsonObject = JSONObject()
+
+        jsonObject.put(REQUEST_EMAIL, smartLockOptions.requestEmail)
+        jsonObject.put(REQUEST_PROFILE, smartLockOptions.requestProfile)
+
+        return jsonObject.toString()
+    }
+
+    fun parseSmartLockOptions(json: String): SmartLockOptions? {
+        try {
+            val jsonObject = JSONObject(json)
+            return SmartLockOptions(
+                jsonObject.getBoolean(REQUEST_EMAIL),
+                jsonObject.getBoolean(REQUEST_PROFILE)
+            )
+        } catch (jsonException: JSONException) {
+            jsonException.printStackTrace()
+        }
+        return null
+    }
 }
