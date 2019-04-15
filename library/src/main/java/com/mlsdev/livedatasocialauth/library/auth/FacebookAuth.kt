@@ -3,6 +3,7 @@ package com.mlsdev.livedatasocialauth.library.auth
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.google.android.gms.auth.api.credentials.Credential
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
 import com.mlsdev.livedatasocialauth.library.fragment.AuthFragment

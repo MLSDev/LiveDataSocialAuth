@@ -166,7 +166,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         )
 
         SmartLock.Builder(WeakReference(activity!!))
-            .disableAutoSignIne()
+            .disableAutoSignIn()
             .setAccountTypes(IdentityProviders.GOOGLE)
             .build()
             .saveCredential(credential, smartLockOptions)

@@ -16,6 +16,7 @@ object JsonParser {
     private const val AUTH_PROVIDER_KEY = "auth_provider"
     private const val REQUEST_EMAIL = "request_email"
     private const val REQUEST_PROFILE = "request_profile"
+    private const val CLIENT_ID = "client_id"
     const val AUTH_ACCOUNT_KEY = "auth_account"
     const val SMART_LOCK_OPTIONS_KEY = "smart_lock_options"
 
@@ -54,6 +55,7 @@ object JsonParser {
 
         jsonObject.put(REQUEST_EMAIL, smartLockOptions.requestEmail)
         jsonObject.put(REQUEST_PROFILE, smartLockOptions.requestProfile)
+        jsonObject.put(CLIENT_ID, smartLockOptions.clientId)
 
         return jsonObject.toString()
     }
@@ -64,7 +66,9 @@ object JsonParser {
             return SmartLockOptions(
                 jsonObject.getBoolean(REQUEST_EMAIL),
                 jsonObject.getBoolean(REQUEST_PROFILE)
-            )
+            ).apply {
+                jsonObject.getString(CLIENT_ID)?.let { clientId = it }
+            }
         } catch (jsonException: JSONException) {
             jsonException.printStackTrace()
         }

@@ -6,14 +6,26 @@ import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.gms.auth.api.credentials.IdentityProviders
 import com.mlsdev.livedatasocialauth.library.auth.FacebookAuth
 import com.mlsdev.livedatasocialauth.library.auth.GoogleAuth
+import com.mlsdev.livedatasocialauth.library.smartlock.SmartLock
+import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        SmartLock.Builder(WeakReference(this))
+            .setAccountTypes(IdentityProviders.GOOGLE, IdentityProviders.FACEBOOK)
+            .build()
+            .requestCredentialAndAutoSignIn()
+            .observe(this, Observer {
+                Log.d("SMART_LOCK", "Is logged in: ${it.isSuccess}")
+            })
+
 
         findViewById<Button>(R.id.button_with_facebook).setOnClickListener {
             FacebookAuth.Builder(this)
@@ -36,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 .clientId("659203926601-fsnm6aeu2egvgd3vqdcducfqb0mjkqe0.apps.googleusercontent.com")
                 .requestEmail()
                 .requestProfile()
+                .enableSmartLock()
                 .build()
                 .signIn()
                 .observe(this, Observer {

@@ -7,12 +7,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.CredentialRequest
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult
+import com.google.android.gms.auth.api.credentials.IdentityProviders.FACEBOOK
+import com.google.android.gms.auth.api.credentials.IdentityProviders.GOOGLE
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
+import com.mlsdev.livedatasocialauth.library.auth.FacebookAuth
+import com.mlsdev.livedatasocialauth.library.auth.GoogleAuth
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 import com.mlsdev.livedatasocialauth.library.common.Account
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
@@ -45,9 +50,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
             return fragment
         }
 
-        const val REQUEST_CODE_SAVE = 1
-        const val REQUEST_CODE_SAVE_INTERNAL = 2
-        const val REQUEST_CODE_READ = 3
+        const val REQUEST_CODE_SAVE = 11
+        const val REQUEST_CODE_SAVE_INTERNAL = 22
+        const val REQUEST_CODE_READ = 33
     }
 
     override fun onConnected(data: Bundle?) {
@@ -75,7 +80,97 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
 
 
         Auth.CredentialsApi.request(credentialsApiClient, credentialRequest).setResultCallback {
-            credentialRequestResult.postValue(it)
+            if (it.status.hasResolution()) {
+                resolveRequestResult(it)
+                return@setResultCallback
+            }
+
+            val accountType = it.credential.accountType
+            when {
+                it.status.isSuccess && accountType == GOOGLE -> handleRequestedGoogleAccountCredential(it.credential)
+                it.status.isSuccess && accountType == FACEBOOK -> handleRequestedFacebookAccountCredential(it.credential)
+                else -> resolveRequestResult(it)
+            }
+        }
+    }
+
+    private fun resolveRequestResult(result: CredentialRequestResult) {
+        when (result.status.statusCode) {
+            CommonStatusCodes.RESOLUTION_REQUIRED -> {
+                try {
+                    result.status.startResolutionForResult(activity!!, REQUEST_CODE_READ)
+                } catch (exception: IntentSender.SendIntentException) {
+                    account.postValue(AuthResult(null, exception, false))
+                }
+            }
+            else -> {
+                credentialsApiClient.disconnect()
+                account.postValue(AuthResult(null, Exception("Request credential canceled"), false))
+            }
+        }
+    }
+
+    private fun handleRequestedGoogleAccountCredential(credential: Credential) {
+        val googleAuthBuilder = GoogleAuth.Builder(activity!!)
+        val options: SmartLockOptions? =
+            SocialAuthManager.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
+                JsonParser.parseSmartLockOptions(json)?.let { options ->
+                    if (options.requestEmail) googleAuthBuilder.requestEmail()
+                    if (options.requestProfile) googleAuthBuilder.requestProfile()
+                    options.clientId?.let { googleAuthBuilder.clientId(it) }
+                    options
+                }
+            }
+
+        if (options == null) {
+            googleAuthBuilder.requestProfile().requestEmail()
+        }
+
+        googleAuthBuilder.credential(credential)
+
+        Transformations.map(googleAuthBuilder.build().signIn()) {
+            if (it.isSuccess && it.account != null) {
+                val updateCredential = Credential.Builder(it.account.email)
+                    .setAccountType(GOOGLE)
+                    .setName(it.account.displayName)
+                    .build()
+                saveCredentialInternal(
+                    updateCredential,
+                    options ?: SmartLockOptions(
+                        requestEmail = true,
+                        requestProfile = true
+                    )
+                )
+            }
+        }
+    }
+
+    private fun handleRequestedFacebookAccountCredential(credential: Credential) {
+        val facebookAuthBuilder = FacebookAuth.Builder(activity!!)
+        val options: SmartLockOptions? =
+            SocialAuthManager.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
+                JsonParser.parseSmartLockOptions(json)?.let { options ->
+                    if (options.requestEmail) facebookAuthBuilder.requestEmail()
+                    if (options.requestProfile) facebookAuthBuilder.requestProfile()
+
+                    options
+                }
+            }
+
+        Transformations.map(facebookAuthBuilder.build().signIn()) {
+            if (it.isSuccess && it.account != null) {
+                val updateCredential = Credential.Builder(it.account.email)
+                    .setAccountType(FACEBOOK)
+                    .setName(it.account.displayName)
+                    .build()
+                saveCredentialInternal(
+                    updateCredential,
+                    options ?: SmartLockOptions(
+                        requestEmail = true,
+                        requestProfile = true
+                    )
+                )
+            }
         }
     }
 
@@ -153,9 +248,10 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         return credentialRequestResult
     }
 
-    fun requestCredentialsAndSignIn() {
+    fun requestCredentialsAndSignIn(): LiveData<AuthResult> {
         smartLockAction = SmartLockAction.REQUEST_AND_AUTO_SIGN_IN
         credentialsApiClient.connect()
+        return account
     }
 
     fun saveCredentials(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> {
@@ -185,7 +281,17 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
 
         when (requestCode) {
             REQUEST_CODE_READ -> {
-
+                if (isSuccess && data != null) {
+                    val credential = data.getParcelableExtra<Credential>(Credential.EXTRA_KEY)
+                    when (credential.accountType) {
+                        GOOGLE -> handleRequestedGoogleAccountCredential(credential)
+                        FACEBOOK -> handleRequestedFacebookAccountCredential(credential)
+                        else -> account.postValue(AuthResult(null, Exception("No one account type set"), false))
+                    }
+                } else {
+                    credentialsApiClient.disconnect()
+                    account.postValue(AuthResult(null, Exception("User must sign in manually"), false))
+                }
             }
             REQUEST_CODE_SAVE -> {
                 status.postValue(

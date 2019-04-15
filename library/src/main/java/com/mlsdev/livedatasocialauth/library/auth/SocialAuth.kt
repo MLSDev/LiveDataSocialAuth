@@ -40,7 +40,7 @@ abstract class SocialAuth(
                 fragmentManager
                     ?.beginTransaction()
                     ?.add(this, getAuthFragmentTag())
-                    ?.commit()
+                    ?.commitNowAllowingStateLoss()
                 fragmentManager?.executePendingTransactions()
             }
         } else fragment as AuthFragment

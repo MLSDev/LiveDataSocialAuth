@@ -47,7 +47,7 @@ object SocialAuthManager {
         }
     }
 
-    private fun getCurrentAccountSync(): Account? =
+    fun getCurrentAccountSync(): Account? =
         sharedPreferences?.getString(AUTH_ACCOUNT_KEY, null)?.let { JsonParser.parseAccountJson(it) }
 
     fun getCurrentAccount(): LiveData<Account> {
