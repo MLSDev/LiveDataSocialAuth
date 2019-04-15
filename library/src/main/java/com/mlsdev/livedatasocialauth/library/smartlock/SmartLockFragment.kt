@@ -14,6 +14,8 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
+import com.mlsdev.livedatasocialauth.library.common.Account
+import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
 import com.mlsdev.livedatasocialauth.library.util.JsonParser
 
@@ -25,6 +27,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     private var disableAutoSignIn: Boolean = false
     private val credentialRequestResult = MutableLiveData<CredentialRequestResult>()
     private val status = MutableLiveData<Status>()
+    private val account = MutableLiveData<AuthResult>()
+    private var currentAccount: Account? = null
+
     private val credentialsApiClient: GoogleApiClient by lazy {
         GoogleApiClient.Builder(context!!)
             .addConnectionCallbacks(this)
@@ -100,6 +105,31 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    private fun saveCredentialInternal(credential: Credential, options: SmartLockOptions) {
+        Auth.CredentialsApi.save(credentialsApiClient, credential).setResultCallback { saveStatus ->
+            when {
+                saveStatus.isSuccess -> {
+                    SocialAuthManager.sharedPreferences?.edit()
+                        ?.putString(JsonParser.SMART_LOCK_OPTIONS_KEY, JsonParser.smartLockOptionsToJson(options))
+                        ?.apply()
+
+                    credentialsApiClient.disconnect()
+                    account.postValue(AuthResult(currentAccount, null, true))
+                    currentAccount = null
+                }
+                saveStatus.hasResolution() -> {
+                    try {
+                        saveStatus.startResolutionForResult(activity!!, REQUEST_CODE_SAVE_INTERNAL)
+                    } catch (exception: IntentSender.SendIntentException) {
+                        currentAccount = null
+                        account.postValue(AuthResult(null, exception, false))
+                    }
+                }
+                else -> credentialsApiClient.disconnect()
+            }
+        }
+    }
+
     private fun deleteCredentialsOnConnected() {
         Auth.CredentialsApi.delete(credentialsApiClient, credential).setResultCallback {
             credentialsApiClient.disconnect()
@@ -154,7 +184,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         val isSuccess = resultCode == Activity.RESULT_OK
 
         when (requestCode) {
-            REQUEST_CODE_READ -> TODO()
+            REQUEST_CODE_READ -> {
+
+            }
             REQUEST_CODE_SAVE -> {
                 status.postValue(
                     Status(
@@ -165,7 +197,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 )
                 credentialsApiClient.disconnect()
             }
-            REQUEST_CODE_SAVE_INTERNAL -> TODO()
+            REQUEST_CODE_SAVE_INTERNAL -> {
+                credentialsApiClient.disconnect()
+                account.postValue(AuthResult(currentAccount, null, isSuccess))
+                currentAccount = null
+            }
         }
     }
 
