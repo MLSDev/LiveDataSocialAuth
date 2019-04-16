@@ -118,7 +118,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 account.postValue(
                     AuthResult(
                         null,
-                        Exception(getString(R.string.error_request_credential_canceled)),
+                        Exception(result.status.statusMessage),
                         false
                     )
                 )

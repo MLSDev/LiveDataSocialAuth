@@ -1,5 +1,8 @@
 # Changelog
 
+## `0.4.0` - 2019-04-16
+### Added
+
 ## `0.3.0` - 2019-04-16
 ### Added
 - Smart Lock Password for the `Google authorization`

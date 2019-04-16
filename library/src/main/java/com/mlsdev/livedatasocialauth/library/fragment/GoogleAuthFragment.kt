@@ -137,7 +137,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
             }
             SocialAuthManager.saveAccount(account)
 
-            if (authConditions.permissions.contains(ENABLE_SMART_LOCK.value))
+            if (authConditions.smartLockEnabled)
                 proceedWithSmartLock(account)
             else
                 signInLiveData.postValue(AuthResult(account, null, true))
@@ -154,7 +154,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
-    private fun proceedWithSmartLock(account: Account) {
+    override fun proceedWithSmartLock(account: Account) {
         val credential: Credential = Credential.Builder(account.email)
             .setAccountType(IdentityProviders.GOOGLE)
             .setName(account.displayName)

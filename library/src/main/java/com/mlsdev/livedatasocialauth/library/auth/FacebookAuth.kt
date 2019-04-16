@@ -3,7 +3,6 @@ package com.mlsdev.livedatasocialauth.library.auth
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.google.android.gms.auth.api.credentials.Credential
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
 import com.mlsdev.livedatasocialauth.library.fragment.AuthFragment
@@ -40,6 +39,11 @@ class FacebookAuth private constructor(
 
         fun requestProfile(): Builder {
             authConditions.permissions.add(AuthConditions.Key.REQUEST_PROFILE.value)
+            return this
+        }
+
+        fun enableSmartLock(): Builder {
+            authConditions.smartLockEnabled = true
             return this
         }
 

@@ -56,7 +56,7 @@ class GoogleAuth private constructor(
         }
 
         fun enableSmartLock(): Builder {
-            authConditions.permissions.add(AuthConditions.Key.ENABLE_SMART_LOCK.value)
+            authConditions.smartLockEnabled = true
             return this
         }
 

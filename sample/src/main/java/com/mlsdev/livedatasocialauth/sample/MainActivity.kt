@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.credentials.IdentityProviders
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, LogOutActivity::class.java))
                     finish()
                 } else {
-                    Log.e("SmartLock.SignIn", it.exception?.message)
+                    Toast.makeText(this, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             })
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             FacebookAuth.Builder(this)
                 .requestEmail()
                 .requestProfile()
+                .enableSmartLock()
                 .build()
                 .signIn()
                 .observe(this, Observer {
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this, LogOutActivity::class.java))
                         finish()
                     } else {
-                        Log.e("Facebook.SignIn", it.exception?.message)
+                        Log.e("Facebook.SignIn", "${it?.exception?.message}")
                     }
                 })
         }
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this, LogOutActivity::class.java))
                         finish()
                     } else {
-                        Log.e("Google.SignIn", it.exception?.message)
+                        Log.e("Google.SignIn", "${it?.exception?.message}")
                     }
                 })
         }
