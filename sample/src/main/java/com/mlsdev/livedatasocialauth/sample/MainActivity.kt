@@ -23,7 +23,12 @@ class MainActivity : AppCompatActivity() {
             .build()
             .requestCredentialAndAutoSignIn()
             .observe(this, Observer {
-                Log.d("SMART_LOCK", "Is logged in: ${it.isSuccess}")
+                if (it.isSuccess) {
+                    startActivity(Intent(this, LogOutActivity::class.java))
+                    finish()
+                } else {
+                    Log.e("SmartLock.SignIn", it.exception?.message)
+                }
             })
 
 
@@ -45,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button_with_google).setOnClickListener {
             GoogleAuth.Builder(this)
-                .clientId("659203926601-fsnm6aeu2egvgd3vqdcducfqb0mjkqe0.apps.googleusercontent.com")
                 .requestEmail()
                 .requestProfile()
                 .enableSmartLock()

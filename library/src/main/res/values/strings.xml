@@ -2,4 +2,11 @@
     <string name="app_name">library</string>
     <string name="facebook_app_id">override with a real id</string>
     <string name="social_auth_prefs">social_auth_prefs</string>
+    <string name="error_request_credential_canceled">Request credential canceled</string>
+    <string name="message_user_credential_saved">User credentials have been saved</string>
+    <string name="error_account_type_not_set">No one account type set</string>
+    <string name="error_sign_in_manually">User must sign in manually</string>
+    <string name="error_save_credential">Can not save user credential</string>
+    <string name="message_signed_out">You have been signed out</string>
+    <string name="error_get_facebook_account">Can not retrieve Facebook account</string>
 </resources>

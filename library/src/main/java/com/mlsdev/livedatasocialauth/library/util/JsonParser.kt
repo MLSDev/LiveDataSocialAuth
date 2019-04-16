@@ -67,7 +67,7 @@ object JsonParser {
                 jsonObject.getBoolean(REQUEST_EMAIL),
                 jsonObject.getBoolean(REQUEST_PROFILE)
             ).apply {
-                jsonObject.getString(CLIENT_ID)?.let { clientId = it }
+                if (jsonObject.has(CLIENT_ID)) clientId = jsonObject.getString(CLIENT_ID)
             }
         } catch (jsonException: JSONException) {
             jsonException.printStackTrace()

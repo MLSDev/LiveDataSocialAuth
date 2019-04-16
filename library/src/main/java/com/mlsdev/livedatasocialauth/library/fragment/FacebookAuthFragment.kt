@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.mlsdev.livedatasocialauth.library.R
 import com.mlsdev.livedatasocialauth.library.auth.AuthConditions
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 import com.mlsdev.livedatasocialauth.library.common.Account
@@ -32,7 +33,13 @@ class FacebookAuthFragment : AuthFragment() {
             }
 
             if (result != null) handleAuthResult(result)
-            else signInLiveData.postValue(AuthResult(null, Exception("Can't retrieve Facebook account"), false))
+            else signInLiveData.postValue(
+                AuthResult(
+                    null,
+                    Exception(getString(R.string.error_get_facebook_account)),
+                    false
+                )
+            )
 
         }
 
@@ -72,7 +79,7 @@ class FacebookAuthFragment : AuthFragment() {
         LoginManager.getInstance().logOut()
         LoginManager.getInstance().unregisterCallback(callbackManager)
         SocialAuthManager.removeCurrentAccount()
-        this.postValue(Status(true, "You have been signed out", 0))
+        this.postValue(Status(true, getString(R.string.message_signed_out), 0))
         onDetach()
     }
 

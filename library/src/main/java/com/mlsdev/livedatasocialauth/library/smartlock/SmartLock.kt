@@ -21,8 +21,10 @@ class SmartLock private constructor(private val builder: Builder) {
     fun saveCredential(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> =
         fragment.saveCredentials(credential, smartLockOptions)
 
-    fun requestCredentialAndAutoSignIn() : LiveData<AuthResult> =
-            fragment.requestCredentialsAndSignIn()
+    fun requestCredentialAndAutoSignIn(): LiveData<AuthResult> =
+        fragment.requestCredentialsAndSignIn()
+
+    fun disableAutoSignIn(): LiveData<Status> = fragment.disableAuthSignIn()
 
     class Builder(val activityReference: WeakReference<FragmentActivity>) {
         var disableAutoSignIn: Boolean = false
@@ -52,7 +54,7 @@ class SmartLock private constructor(private val builder: Builder) {
                 fragmentManager
                     ?.beginTransaction()
                     ?.add(this, TAG)
-                    ?.commit()
+                    ?.commitNowAllowingStateLoss()
                 fragmentManager?.executePendingTransactions()
             }
         } else fragment as SmartLockFragment

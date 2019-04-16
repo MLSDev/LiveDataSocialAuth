@@ -23,7 +23,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "0.2.0"
+        versionName "0.3.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -51,7 +51,7 @@ ext {
     siteUrl = 'https://github.com/MLSDev/LiveDataSocialAuth'
     gitUrl = 'https://github.com/MLSDev/LiveDataSocialAuth.git'
 
-    libraryVersion = '0.2.0'
+    libraryVersion = '0.3.0'
 
     developerId = 'mlsdev'
     developerName = 'MLSDev'

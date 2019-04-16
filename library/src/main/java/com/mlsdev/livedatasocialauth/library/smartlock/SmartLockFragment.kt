@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
@@ -16,6 +17,7 @@ import com.google.android.gms.auth.api.credentials.IdentityProviders.FACEBOOK
 import com.google.android.gms.auth.api.credentials.IdentityProviders.GOOGLE
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
+import com.mlsdev.livedatasocialauth.library.R
 import com.mlsdev.livedatasocialauth.library.auth.FacebookAuth
 import com.mlsdev.livedatasocialauth.library.auth.GoogleAuth
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
@@ -98,14 +100,28 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         when (result.status.statusCode) {
             CommonStatusCodes.RESOLUTION_REQUIRED -> {
                 try {
-                    result.status.startResolutionForResult(activity!!, REQUEST_CODE_READ)
+                    startIntentSenderForResult(
+                        result.status.resolution.intentSender,
+                        REQUEST_CODE_READ,
+                        null,
+                        0,
+                        0,
+                        0,
+                        null
+                    )
                 } catch (exception: IntentSender.SendIntentException) {
                     account.postValue(AuthResult(null, exception, false))
                 }
             }
             else -> {
                 credentialsApiClient.disconnect()
-                account.postValue(AuthResult(null, Exception("Request credential canceled"), false))
+                account.postValue(
+                    AuthResult(
+                        null,
+                        Exception(getString(R.string.error_request_credential_canceled)),
+                        false
+                    )
+                )
             }
         }
     }
@@ -128,8 +144,10 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
 
         googleAuthBuilder.credential(credential)
 
-        Transformations.map(googleAuthBuilder.build().signIn()) {
+        googleAuthBuilder.build().signIn().observe(this, Observer {
             if (it.isSuccess && it.account != null) {
+                currentAccount = it.account
+
                 val updateCredential = Credential.Builder(it.account.email)
                     .setAccountType(GOOGLE)
                     .setName(it.account.displayName)
@@ -142,7 +160,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                     )
                 )
             }
-        }
+        })
     }
 
     private fun handleRequestedFacebookAccountCredential(credential: Credential) {
@@ -184,7 +202,13 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                             ?.putString(JsonParser.SMART_LOCK_OPTIONS_KEY, JsonParser.smartLockOptionsToJson(it))
                             ?.apply()
                     }
-                    status.postValue(Status(true, "User credentials have been saved", CommonStatusCodes.SUCCESS))
+                    status.postValue(
+                        Status(
+                            true,
+                            getString(R.string.message_user_credential_saved),
+                            CommonStatusCodes.SUCCESS
+                        )
+                    )
                 }
                 saveStatus.hasResolution() -> {
                     try {
@@ -286,18 +310,24 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                     when (credential.accountType) {
                         GOOGLE -> handleRequestedGoogleAccountCredential(credential)
                         FACEBOOK -> handleRequestedFacebookAccountCredential(credential)
-                        else -> account.postValue(AuthResult(null, Exception("No one account type set"), false))
+                        else -> account.postValue(
+                            AuthResult(
+                                null,
+                                Exception(getString(R.string.error_account_type_not_set)),
+                                false
+                            )
+                        )
                     }
                 } else {
                     credentialsApiClient.disconnect()
-                    account.postValue(AuthResult(null, Exception("User must sign in manually"), false))
+                    account.postValue(AuthResult(null, Exception(getString(R.string.error_sign_in_manually)), false))
                 }
             }
             REQUEST_CODE_SAVE -> {
                 status.postValue(
                     Status(
                         isSuccess,
-                        if (isSuccess) "User credentials have been saved" else "Error",
+                        getString(if (isSuccess) R.string.message_user_credential_saved else R.string.error_save_credential),
                         if (isSuccess) CommonStatusCodes.SUCCESS else CommonStatusCodes.ERROR
                     )
                 )
