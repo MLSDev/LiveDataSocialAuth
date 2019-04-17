@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.IdentityProviders
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignInResult
@@ -21,9 +19,7 @@ import com.mlsdev.livedatasocialauth.library.common.AuthProvider
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
 import com.mlsdev.livedatasocialauth.library.fragment.GoogleAuthFragment.AuthAction.*
-import com.mlsdev.livedatasocialauth.library.smartlock.SmartLock
 import com.mlsdev.livedatasocialauth.library.smartlock.SmartLockOptions
-import java.lang.ref.WeakReference
 
 class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener {
@@ -135,12 +131,10 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
                 email = result.signInAccount?.email
                 authProvider = AuthProvider.GOOGLE
             }
-            SocialAuthManager.saveAccount(account)
 
-            if (authConditions.smartLockEnabled)
-                proceedWithSmartLock(account)
-            else
-                signInLiveData.postValue(AuthResult(account, null, true))
+            SocialAuthManager.saveAccount(account)
+            saveCredentialAndPostAuthResult(account, IdentityProviders.GOOGLE)
+
         } else {
             if (authConditions.googleAuthCredential != null) {
                 Auth.CredentialsApi.delete(googleApiClient, authConditions.googleAuthCredential).setResultCallback {
@@ -154,28 +148,10 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
-    override fun proceedWithSmartLock(account: Account) {
-        val credential: Credential = Credential.Builder(account.email)
-            .setAccountType(IdentityProviders.GOOGLE)
-            .setName(account.displayName)
-            .build()
-
-        val smartLockOptions = SmartLockOptions(
-            authConditions.permissions.contains(REQUEST_EMAIL.value),
-            authConditions.permissions.contains(REQUEST_PROFILE.value)
-        )
-
-        SmartLock.Builder(WeakReference(activity!!))
-            .disableAutoSignIn()
-            .setAccountTypes(IdentityProviders.GOOGLE)
-            .build()
-            .saveCredential(credential, smartLockOptions)
-            .observe(this, Observer {
-                signInLiveData.apply {
-                    this.postValue(AuthResult(account, null, true))
-                }
-            })
-    }
+    override fun buildSmartLockCredentialOptions(): SmartLockOptions = SmartLockOptions(
+        authConditions.permissions.contains(REQUEST_EMAIL.value),
+        authConditions.permissions.contains(REQUEST_PROFILE.value)
+    )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

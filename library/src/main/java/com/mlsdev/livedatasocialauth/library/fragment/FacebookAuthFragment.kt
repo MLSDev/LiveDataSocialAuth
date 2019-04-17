@@ -4,23 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.IdentityProviders
 import com.mlsdev.livedatasocialauth.library.R
 import com.mlsdev.livedatasocialauth.library.auth.AuthConditions
+import com.mlsdev.livedatasocialauth.library.auth.AuthConditions.Key
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 import com.mlsdev.livedatasocialauth.library.common.Account
 import com.mlsdev.livedatasocialauth.library.common.AuthProvider
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
-import com.mlsdev.livedatasocialauth.library.smartlock.SmartLock
 import com.mlsdev.livedatasocialauth.library.smartlock.SmartLockOptions
 import org.json.JSONException
-import java.lang.ref.WeakReference
 
 class FacebookAuthFragment : AuthFragment() {
 
@@ -101,7 +98,7 @@ class FacebookAuthFragment : AuthFragment() {
 
                 val authAccount = Account().apply {
                     id = profile.id
-                    email = jsonObject.getString(AuthConditions.Key.REQUEST_EMAIL.value)
+                    email = jsonObject.getString(Key.REQUEST_EMAIL.value)
                     firstName = profile.firstName
                     lastName = profile.lastName
                     displayName = profile.name
@@ -109,11 +106,7 @@ class FacebookAuthFragment : AuthFragment() {
                 }
 
                 SocialAuthManager.saveAccount(authAccount)
-
-                if (authConditions.smartLockEnabled)
-                    proceedWithSmartLock(authAccount)
-                else
-                    signInLiveData.postValue(AuthResult(authAccount, null, true))
+                saveCredentialAndPostAuthResult(authAccount, IdentityProviders.FACEBOOK)
 
             } catch (exception: JSONException) {
                 exception.printStackTrace()
@@ -125,28 +118,9 @@ class FacebookAuthFragment : AuthFragment() {
         graphRequest.executeAsync()
     }
 
-    override fun proceedWithSmartLock(account: Account) {
-
-        val credential: Credential = Credential.Builder(account.email)
-            .setAccountType(IdentityProviders.FACEBOOK)
-            .setName(account.displayName)
-            .build()
-
-        val smartLockOptions = SmartLockOptions(
-            authConditions.permissions.contains(AuthConditions.Key.REQUEST_EMAIL.value),
-            authConditions.permissions.contains(AuthConditions.Key.REQUEST_PROFILE.value)
-        )
-
-        SmartLock.Builder(WeakReference(activity!!))
-            .disableAutoSignIn()
-            .build()
-            .saveCredential(credential, smartLockOptions)
-            .observe(this, Observer {
-                signInLiveData.apply {
-                    this.postValue(AuthResult(account, null, true))
-                }
-            })
-
-    }
+    override fun buildSmartLockCredentialOptions(): SmartLockOptions = SmartLockOptions(
+        authConditions.permissions.contains(Key.REQUEST_EMAIL.value),
+        authConditions.permissions.contains(Key.REQUEST_PROFILE.value)
+    )
 
 }
