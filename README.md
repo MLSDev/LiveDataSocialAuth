@@ -1,3 +1,4 @@
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 [![Download](https://api.bintray.com/packages/spetrosiukmlsdev/mlsdev/livedatasocialauth/images/download.svg)](https://bintray.com/spetrosiukmlsdev/mlsdev/livedatasocialauth/_latestVersion)
 
 # LiveDataSocialAuth
