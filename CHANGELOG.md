@@ -1,5 +1,11 @@
 # Changelog
 
+## `0.4.1` - 2019-04-17
+### Added
+- User's avatar displaying
+### Fixed
+- Sign in with Facebook
+
 ## `0.4.0` - 2019-04-16
 ### Added
 - Smart Lock Password for the `Facebook authorization`

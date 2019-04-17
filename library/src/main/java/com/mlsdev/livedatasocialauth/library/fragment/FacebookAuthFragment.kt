@@ -21,6 +21,8 @@ import org.json.JSONException
 
 class FacebookAuthFragment : AuthFragment() {
 
+    private val photoWidth = 100
+    private val photoHeight = 100
     private val callbackManager = CallbackManager.Factory.create()
 
     private val callback = object : FacebookCallback<LoginResult> {
@@ -102,6 +104,7 @@ class FacebookAuthFragment : AuthFragment() {
                     firstName = profile.firstName
                     lastName = profile.lastName
                     displayName = profile.name
+                    avatar = profile.getProfilePictureUri(photoWidth, photoHeight)
                     authProvider = AuthProvider.FACEBOOK
                 }
 

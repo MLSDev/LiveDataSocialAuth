@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.CredentialRequest
@@ -151,6 +150,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 val updateCredential = Credential.Builder(it.account.email)
                     .setAccountType(GOOGLE)
                     .setName(it.account.displayName)
+                    .setProfilePictureUri(it.account.avatar)
                     .build()
                 saveCredentialInternal(
                     updateCredential,
@@ -175,11 +175,13 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 }
             }
 
-        Transformations.map(facebookAuthBuilder.build().signIn()) {
+
+        facebookAuthBuilder.build().signIn().observe(this, Observer {
             if (it.isSuccess && it.account != null) {
                 val updateCredential = Credential.Builder(it.account.email)
                     .setAccountType(FACEBOOK)
                     .setName(it.account.displayName)
+                    .setProfilePictureUri(it.account.avatar)
                     .build()
                 saveCredentialInternal(
                     updateCredential,
@@ -189,7 +191,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                     )
                 )
             }
-        }
+        })
     }
 
     private fun saveCredentialsOnConnected() {

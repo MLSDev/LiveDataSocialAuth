@@ -48,6 +48,7 @@ abstract class AuthFragment : Fragment() {
         val credential = Credential.Builder(account.email)
             .setAccountType(provider)
             .setName(account.displayName)
+            .setProfilePictureUri(account.avatar)
             .build()
 
         SmartLock.Builder(WeakReference(activity!!))

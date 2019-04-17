@@ -129,6 +129,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
                 firstName = result.signInAccount?.givenName
                 lastName = result.signInAccount?.familyName
                 email = result.signInAccount?.email
+                avatar = result.signInAccount?.photoUrl
                 authProvider = AuthProvider.GOOGLE
             }
 
