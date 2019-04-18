@@ -2,11 +2,11 @@
 [![Download](https://api.bintray.com/packages/spetrosiukmlsdev/mlsdev/livedatasocialauth/images/download.svg)](https://bintray.com/spetrosiukmlsdev/mlsdev/livedatasocialauth/_latestVersion)
 
 # LiveDataSocialAuth
-LiveDataSocialAuth is a library for the signing in with Google or Facabook accounts
+LiveDataSocialAuth is a library for the signing in with `Google` or `Facabook` accounts
 
 ## Setup
 ### Gradle file
-To use this library your `minSdkVersion` must be >= 21.
+To use this library your `minSdkVersion` must be >= `21`
 
 In your build.gradle :
 ```gradle
