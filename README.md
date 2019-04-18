@@ -30,7 +30,7 @@ To do all needed stuff follow the oficial [documentation](https://developers.fac
 ```xml
   <string name="facebook_app_id">your_application_id</string>
 ```
-- Add the `meta-data` inside your `application` element into your app `manifest.xml` file:
+- Add the `meta-data` inside your `application` element in your app `manifest.xml` file:
 ```xml
   <meta-data 
         android:name="com.facebook.sdk.ApplicationId" 
