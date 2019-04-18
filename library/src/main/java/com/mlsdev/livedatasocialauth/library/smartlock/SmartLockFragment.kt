@@ -66,6 +66,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Proceed with the [Credential] requesting after the [credentialsApiClient] connected
+     * */
     private fun requestCredentialsOnConnected() {
         if (disableAutoSignIn)
             Auth.CredentialsApi.disableAutoSignIn(credentialsApiClient)
@@ -75,6 +78,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Proceed with the [Credential] requesting and signing in after the [credentialsApiClient] connected
+     * */
     private fun requestCredentialsAndSignInOnConnected() {
         if (disableAutoSignIn)
             Auth.CredentialsApi.disableAutoSignIn(credentialsApiClient)
@@ -95,6 +101,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Resolves the [CredentialRequestResult] for further signing in process
+     *
+     * @param result The [CredentialRequestResult]
+     * */
     private fun resolveRequestResult(result: CredentialRequestResult) {
         when (result.status.statusCode) {
             CommonStatusCodes.RESOLUTION_REQUIRED -> {
@@ -125,6 +136,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Handles the requested Google account [Credential] and sign in the user
+     *
+     * @param credential The [Credential] with all needed information for signing in
+     * */
     private fun handleRequestedGoogleAccountCredential(credential: Credential) {
         val googleAuthBuilder = GoogleAuth.Builder(activity!!)
         val options: SmartLockOptions? =
@@ -163,6 +179,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         })
     }
 
+    /**
+     * Handles the requested Facebook account [Credential] and sign in the user
+     *
+     * @param credential The [Credential] with all needed information for signing in
+     * */
     private fun handleRequestedFacebookAccountCredential(credential: Credential) {
         val facebookAuthBuilder = FacebookAuth.Builder(activity!!)
         val options: SmartLockOptions? =
@@ -174,7 +195,6 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                     options
                 }
             }
-
 
         facebookAuthBuilder.build().signIn().observe(this, Observer {
             if (it.isSuccess && it.account != null) {
@@ -194,6 +214,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         })
     }
 
+    /**
+     * Proceed with the [Credential] saving after the [credentialsApiClient] connected
+     * */
     private fun saveCredentialsOnConnected() {
         Auth.CredentialsApi.save(credentialsApiClient, credential).setResultCallback { saveStatus ->
             when {
@@ -226,6 +249,12 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Proceed with the internal [Credential] saving after the [credentialsApiClient] connected
+     *
+     * @param credential the [Credential]
+     * @param options the [SmartLockOptions]
+     * */
     private fun saveCredentialInternal(credential: Credential, options: SmartLockOptions) {
         Auth.CredentialsApi.save(credentialsApiClient, credential).setResultCallback { saveStatus ->
             when {
@@ -251,6 +280,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Proceed with the [Credential] deleting process after the [credentialsApiClient] connected
+     * */
     private fun deleteCredentialsOnConnected() {
         Auth.CredentialsApi.delete(credentialsApiClient, credential).setResultCallback {
             credentialsApiClient.disconnect()
@@ -258,6 +290,9 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         }
     }
 
+    /**
+     * Proceed with the auto sign in disabling process after the [credentialsApiClient] connected
+     * */
     private fun disableAuthSignInOnConnected() {
         Auth.CredentialsApi.disableAutoSignIn(credentialsApiClient).setResultCallback {
             credentialsApiClient.disconnect()
@@ -268,18 +303,34 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     override fun onConnectionSuspended(code: Int) {
     }
 
+    /**
+     * Requests the user's [Credential] for further handling by the client
+     *
+     * @return the [LiveData] with the [CredentialRequestResult] value type
+     * */
     fun requestCredentials(): LiveData<CredentialRequestResult> {
         smartLockAction = SmartLockAction.REQUEST
         credentialsApiClient.connect()
         return credentialRequestResult
     }
 
+    /**
+     * Requests the user's [Credential] and signs in the user with requested [Credential]
+     *
+     * @return The [LiveData] with the [AuthResult] value
+     * */
     fun requestCredentialsAndSignIn(): LiveData<AuthResult> {
         smartLockAction = SmartLockAction.REQUEST_AND_AUTO_SIGN_IN
         credentialsApiClient.connect()
         return account
     }
 
+    /**
+     * Saves the signed in user's [Credential]
+     *
+     * @param credential The user's [Credential] which is used by the Smart Lock Passwords framework
+     * @param smartLockOptions The [SmartLockOptions]
+     * */
     fun saveCredentials(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> {
         smartLockAction = SmartLockAction.SAVE
         this.credential = credential
@@ -288,6 +339,12 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         return status
     }
 
+    /**
+     * Deletes the user's [Credential]
+     *
+     * @param credential The user's [Credential]
+     * @return The [LiveData] with the [Status] value
+     * */
     fun deleteCredentials(credential: Credential): LiveData<Status> {
         this.credential = credential
         smartLockAction = SmartLockAction.DELETE
@@ -295,6 +352,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         return status
     }
 
+    /**
+     * Disables the auto sign in
+     *
+     * @return The [LiveData] with the [Status] value
+     * */
     fun disableAuthSignIn(): LiveData<Status> {
         smartLockAction = SmartLockAction.DISABLE_AUTO_SIGN_IN
         credentialsApiClient.connect()

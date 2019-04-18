@@ -56,6 +56,11 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         return statusLiveData
     }
 
+    /**
+     * Builds the [GoogleSignInOptions] object which is needed for the [GoogleApiClient] creating
+     *
+     * @return [GoogleSignInOptions]
+     * */
     private fun buildGoogleSignInOptions(): GoogleSignInOptions =
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
             if (authConditions.permissions.contains(REQUEST_EMAIL.value))
@@ -70,6 +75,12 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
             authConditions.googleAuthCredential?.let { setAccountName(it.id) }
         }.build()
 
+    /**
+     * Builds the [GoogleApiClient]
+     *
+     * @param options The [GoogleSignInOptions]
+     * @return the [GoogleApiClient] instance
+     * */
     private fun buildGoogleApiClient(options: GoogleSignInOptions): GoogleApiClient = GoogleApiClient.Builder(context!!)
         .addConnectionCallbacks(this)
         .addApi(Auth.GOOGLE_SIGN_IN_API, options)
@@ -84,6 +95,9 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    /**
+     * Continues the sign in process after the [googleApiClient] connected
+     * */
     private fun signInAfterOnConnected() {
         if (authConditions.permissions.contains(DISABLE_AUTO_SIGN_IN.value))
             Auth.GoogleSignInApi.signOut(googleApiClient)
@@ -91,6 +105,9 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(googleApiClient), REQUEST_CODE_SIGN_IN)
     }
 
+    /**
+     * Continues the silent sign in process after the [googleApiClient] connected
+     * */
     private fun silentSignInAfterOnConnected() {
         val pendingResult = Auth.GoogleSignInApi.silentSignIn(googleApiClient)
 
@@ -104,10 +121,16 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
         statusLiveData.postValue(Status(status.isSuccess, status.statusMessage.toString(), status.statusCode))
     }
 
+    /**
+     * Continues the sign out process after the [googleApiClient] connected
+     * */
     private fun signOutOnConnected() {
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(signOutCallback)
     }
 
+    /**
+     * Continues the revoke access process after the [googleApiClient] connected
+     * */
     private fun revokeAccessAfterOnConnected() {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(signOutCallback)
     }
@@ -121,6 +144,12 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
     override fun onConnectionSuspended(code: Int) {
     }
 
+    /**
+     * Handles the sign in result. The [Account] is saved and posted to the [signInLiveData]. Saves user's credential
+     * if the smart lock option is enabled.
+     *
+     * @param result The [GoogleSignInResult] object
+     * */
     private fun handleSignInResult(result: GoogleSignInResult) {
         if (result.isSuccess) {
             val account = Account().apply {

@@ -1,5 +1,11 @@
 # Changelog
 
+## `0.4.2` - 2019-04-17
+### Updated
+- Gradle configurations
+### Added
+- Comments
+
 ## `0.4.1` - 2019-04-17
 ### Added
 - User's avatar displaying

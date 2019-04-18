@@ -88,6 +88,12 @@ class FacebookAuthFragment : AuthFragment() {
         onDetach()
     }
 
+    /**
+     * Handles the sign in result. The [Account] is saved and posted to the [signInLiveData]. Saves user's credential
+     * if the smart lock option is enabled.
+     *
+     * @param result The [LoginResult] object
+     * */
     private fun handleAuthResult(result: LoginResult) {
         val graphRequest = GraphRequest.newMeRequest(result.accessToken) { jsonObject, _ ->
             try {

@@ -19,24 +19,28 @@ abstract class AuthFragment : Fragment() {
 
     /**
      * Sings in a user with Google or Facebook
+     *
      * @return a [LiveData] with [AuthResult]
      * */
     abstract fun signIn(): LiveData<AuthResult>
 
     /**
      * Signs out a user from all social providers
+     *
      * @return a [LiveData] with [Status]
      * */
     abstract fun signOut(): LiveData<Status>
 
     /**
      * Builds the [SmartLockOptions] for the user's [Credential] saving
+     *
      * @return [SmartLockOptions]
      * */
     protected abstract fun buildSmartLockCredentialOptions(): SmartLockOptions
 
     /**
      * Saves the user's [Credential] and posts the [AuthResult] to [signInLiveData]
+     *
      * @param account the [Account] which is created after success social authorization
      * */
     protected fun saveCredentialAndPostAuthResult(account: Account, provider: String) {
