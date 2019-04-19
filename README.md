@@ -19,9 +19,9 @@ dependencies {
 To do all needed stuff follow the oficial [documentation](https://developers.google.com/identity/sign-in/android/start-integrating)
 #### Key points
 - Genrate and add the `google-services.json` into the `/app` directory 
-- Add the dependency `classpath 'com.google.gms:google-services:4.2.0'` to your project-level `build.gradle`
-- Add the plugin `apply plugin: 'com.google.gms.google-services'` at the end of your app-level `build.gradle`
-- Add the dependency `implementation 'com.google.android.gms:play-services-auth:16.0.1'` to your app-level `build.gradle`
+- Add the `classpath 'com.google.gms:google-services:4.2.0'` dependency to your project-level `build.gradle`
+- Add the `apply plugin: 'com.google.gms.google-services'` plugin at the end of your app-level `build.gradle`
+- Add the `implementation 'com.google.android.gms:play-services-auth:16.0.1'` dependency to your app-level `build.gradle`
 
 ### Facebook Login
 To do all needed stuff follow the oficial [documentation](https://developers.facebook.com/docs/facebook-login/android/)
