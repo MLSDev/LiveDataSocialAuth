@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.CredentialRequest
+import com.google.android.gms.auth.api.credentials.CredentialRequestResult
 import com.google.android.gms.auth.api.credentials.IdentityProviders
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
@@ -25,6 +26,8 @@ class SmartLock private constructor(private val builder: Builder) {
         fragment.requestCredentialsAndSignIn()
 
     fun disableAutoSignIn(): LiveData<Status> = fragment.disableAuthSignIn()
+
+    fun requestCredentials(): LiveData<CredentialRequestResult> = fragment.requestCredentials()
 
     class Builder(val activityReference: WeakReference<FragmentActivity>) {
         var disableAutoSignIn: Boolean = false
