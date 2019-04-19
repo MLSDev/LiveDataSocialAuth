@@ -14,31 +14,21 @@ dependencies {
     implementation "com.mlsdev.livedatasocialauth:library:$latestVersion"
 }
 ```
+[Google Sign In set up stuff](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Google-Set-up)
 
-### Google Sign-In
-To do all needed stuff follow the oficial [Google documentation](https://developers.google.com/identity/sign-in/android/start-integrating)
-#### Key points
-- Genrate and add the `google-services.json` into the `/app` directory 
-- Add the `classpath 'com.google.gms:google-services:4.2.0'` dependency to your project-level `build.gradle`
-- Add the `apply plugin: 'com.google.gms.google-services'` plugin at the end of your app-level `build.gradle`
-- Add the `implementation 'com.google.android.gms:play-services-auth:16.0.1'` dependency to your app-level `build.gradle`
-
-### Facebook Login
-To do all needed stuff follow the oficial [Facebook documentation](https://developers.facebook.com/docs/facebook-login/android/)
-#### Key points
-- Add your facebook application `id` into the `strings.xml` file:
-```xml
-  <string name="facebook_app_id">your_application_id</string>
-```
-- Add the `meta-data` inside your `application` element in your app `manifest.xml` file:
-```xml
-  <meta-data 
-        android:name="com.facebook.sdk.ApplicationId" 
-        android:value="@string/facebook_app_id"/>
-```
+[Facebook Log In set up stuff](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Facebook-Login-set-up)
 
 ## Usage
-### 
+[Google Sign In](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Google-Sign-In)
+
+[Google Sign Out](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Google-Sign-Out)
+
+[Facebook Sign In](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Facebook-Login-Usage)
+
+[Facebook Sign Out](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Facebook-Sign-Out)
+
+[Get current account](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Current-account)
+
 
 ## Authors
 * [Sergey Petrosyuk](mailto:petrosyuk@mlsdev.com), MLSDev 
