@@ -1,5 +1,13 @@
 # Changelog
 
+## `1.0.1` - 2019-04-19
+### Added
+- The saving of the [Credential](https://developers.google.com/android/reference/com/google/android/gms/auth/api/credentials/Credential)
+- The deletin of the [Credential](https://developers.google.com/android/reference/com/google/android/gms/auth/api/credentials/Credential)
+
+## `1.0.0` - 2019-04-19
+- Release version
+
 ## `0.4.2` - 2019-04-17
 ### Updated
 - Gradle configurations

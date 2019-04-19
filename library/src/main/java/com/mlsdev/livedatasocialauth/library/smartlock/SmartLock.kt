@@ -29,6 +29,10 @@ class SmartLock private constructor(private val builder: Builder) {
 
     fun requestCredentials(): LiveData<CredentialRequestResult> = fragment.requestCredentials()
 
+    fun deleteCredentials(credential: Credential): LiveData<Status> = fragment.deleteCredentials(credential)
+
+    fun saveCredentials(credential: Credential): LiveData<Status> = fragment.saveCredentials(credential, null)
+
     class Builder(val activityReference: WeakReference<FragmentActivity>) {
         var disableAutoSignIn: Boolean = false
         val credentialsRequestBuilder = CredentialRequest.Builder().apply { setAccountTypes(IdentityProviders.GOOGLE) }

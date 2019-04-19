@@ -331,7 +331,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
      * @param credential The user's [Credential] which is used by the Smart Lock Passwords framework
      * @param smartLockOptions The [SmartLockOptions]
      * */
-    fun saveCredentials(credential: Credential, smartLockOptions: SmartLockOptions): LiveData<Status> {
+    fun saveCredentials(credential: Credential, smartLockOptions: SmartLockOptions?): LiveData<Status> {
         smartLockAction = SmartLockAction.SAVE
         this.credential = credential
         this.smartLockOptions = smartLockOptions
