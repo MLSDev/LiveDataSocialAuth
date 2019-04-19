@@ -16,7 +16,7 @@ dependencies {
 ```
 
 ### Google Sign-In
-To do all needed stuff follow the oficial [documentation](https://developers.google.com/identity/sign-in/android/start-integrating)
+To do all needed stuff follow the oficial [Google documentation](https://developers.google.com/identity/sign-in/android/start-integrating)
 #### Key points
 - Genrate and add the `google-services.json` into the `/app` directory 
 - Add the `classpath 'com.google.gms:google-services:4.2.0'` dependency to your project-level `build.gradle`
@@ -24,7 +24,7 @@ To do all needed stuff follow the oficial [documentation](https://developers.goo
 - Add the `implementation 'com.google.android.gms:play-services-auth:16.0.1'` dependency to your app-level `build.gradle`
 
 ### Facebook Login
-To do all needed stuff follow the oficial [documentation](https://developers.facebook.com/docs/facebook-login/android/)
+To do all needed stuff follow the oficial [Facebook documentation](https://developers.facebook.com/docs/facebook-login/android/)
 #### Key points
 - Add your facebook application `id` into the `strings.xml` file:
 ```xml
@@ -38,7 +38,7 @@ To do all needed stuff follow the oficial [documentation](https://developers.fac
 ```
 
 ## Usage
-###
+### 
 
 ## Authors
 * [Sergey Petrosyuk](mailto:petrosyuk@mlsdev.com), MLSDev 
