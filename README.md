@@ -29,6 +29,8 @@ dependencies {
 
 [Get current account](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Current-account)
 
+[Smart Lock For Passwords](https://github.com/MLSDev/LiveDataSocialAuth/wiki/Smart-Lock-For-Passwords)
+
 
 ## Authors
 * [Sergey Petrosyuk](mailto:petrosyuk@mlsdev.com), MLSDev 
