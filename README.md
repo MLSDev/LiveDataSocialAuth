@@ -33,7 +33,8 @@ dependencies {
 
 
 ## Authors
-* [Sergey Petrosyuk](mailto:petrosyuk@mlsdev.com), MLSDev 
+* [Sergey Petrosyuk](mailto:petrosyuk@mlsdev.com) ([github profile][github-petrosiuk]), MLSDev 
+* [Slava Fir](mailto:fir@mlsdev.com) ([github profile][github-fir]), MLSDev 
 
 ## About MLSDev
 
@@ -45,4 +46,5 @@ Find out more [here][mlsdev] and don't hesitate to [contact us][contact]!
 
 [mlsdev]: http://mlsdev.com
 [contact]: http://mlsdev.com/contact_us
-[github-frederikos]: https://github.com/SerhiyPetrosyuk
+[github-petrosiuk]: https://github.com/SerhiyPetrosyuk
+[github-fir]: https://github.com/SlavaFir
