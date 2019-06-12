@@ -1,5 +1,8 @@
 # Changelog
 
+## `1.0.2` - 2019-06-12
+- App has been removed from the library project
+
 ## `1.0.1` - 2019-04-19
 ### Added
 - The saving of the [Credential](https://developers.google.com/android/reference/com/google/android/gms/auth/api/credentials/Credential)
