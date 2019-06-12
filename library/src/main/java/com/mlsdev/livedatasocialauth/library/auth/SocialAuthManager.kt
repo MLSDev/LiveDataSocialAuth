@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.mlsdev.livedatasocialauth.library.App
 import com.mlsdev.livedatasocialauth.library.R
 import com.mlsdev.livedatasocialauth.library.common.Account
 import com.mlsdev.livedatasocialauth.library.common.AuthProvider
@@ -20,15 +19,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
-object SocialAuthManager {
-    private val context = App.contextReference
+class SocialAuthManager(context: Context) {
     private val currentAccountLiveData = MutableLiveData<Account>()
-    val sharedPreferences: SharedPreferences?
-
-    init {
-        sharedPreferences = context.get()
-            ?.getSharedPreferences(context.get()?.getString(R.string.social_auth_prefs), Context.MODE_PRIVATE)
-    }
+    val sharedPreferences: SharedPreferences? =
+        context.getSharedPreferences(context.getString(R.string.social_auth_prefs), Context.MODE_PRIVATE)
 
     fun signOut(activity: FragmentActivity): LiveData<Status> {
         val facebookAuth = FacebookAuth.Builder(activity).build()

@@ -83,7 +83,7 @@ class FacebookAuthFragment : AuthFragment() {
     override fun signOut(): LiveData<Status> = MutableLiveData<Status>().apply {
         LoginManager.getInstance().logOut()
         LoginManager.getInstance().unregisterCallback(callbackManager)
-        SocialAuthManager.removeCurrentAccount()
+        socialAuthManager?.removeCurrentAccount()
         this.postValue(Status(true, getString(R.string.message_signed_out), 0))
         onDetach()
     }
@@ -114,7 +114,7 @@ class FacebookAuthFragment : AuthFragment() {
                     authProvider = AuthProvider.FACEBOOK
                 }
 
-                SocialAuthManager.saveAccount(authAccount)
+                socialAuthManager?.saveAccount(authAccount)
                 saveCredentialAndPostAuthResult(authAccount, IdentityProviders.FACEBOOK)
 
             } catch (exception: JSONException) {

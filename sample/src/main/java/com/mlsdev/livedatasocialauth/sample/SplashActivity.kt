@@ -10,7 +10,8 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val account: Account? = SocialAuthManager.getCurrentAccountSync()
+        val socialAuthManager = SocialAuthManager(this)
+        val account: Account? = socialAuthManager.getCurrentAccountSync()
 
         if (account != null) {
             if (account.authProvider != null)

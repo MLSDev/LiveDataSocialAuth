@@ -1,11 +1,13 @@
 package com.mlsdev.livedatasocialauth.library.fragment
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.credentials.Credential
 import com.mlsdev.livedatasocialauth.library.auth.AuthConditions
+import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 import com.mlsdev.livedatasocialauth.library.common.Account
 import com.mlsdev.livedatasocialauth.library.common.AuthResult
 import com.mlsdev.livedatasocialauth.library.common.Status
@@ -16,6 +18,7 @@ import java.lang.ref.WeakReference
 abstract class AuthFragment : Fragment() {
     protected val signInLiveData = MutableLiveData<AuthResult>()
     protected lateinit var authConditions: AuthConditions
+    protected var socialAuthManager: SocialAuthManager? = null
 
     /**
      * Sings in a user with Google or Facebook
@@ -65,6 +68,11 @@ abstract class AuthFragment : Fragment() {
                     this.postValue(AuthResult(account, null, true))
                 }
             })
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        socialAuthManager = context?.let { SocialAuthManager(it) }
     }
 
 

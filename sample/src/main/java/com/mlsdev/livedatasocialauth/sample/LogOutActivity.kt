@@ -11,13 +11,16 @@ import androidx.lifecycle.Observer
 import com.mlsdev.livedatasocialauth.library.auth.SocialAuthManager
 
 class LogOutActivity : AppCompatActivity() {
+    private lateinit var socialAuthManager: SocialAuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_out)
 
+        socialAuthManager = SocialAuthManager(this)
+
         findViewById<Button>(R.id.button_log_out).setOnClickListener {
-            SocialAuthManager.signOut(this).observe(this, Observer {
+            socialAuthManager.signOut(this).observe(this, Observer {
                 if (it.success) {
                     val intent = Intent(this, SplashActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -30,7 +33,7 @@ class LogOutActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onStart() {
         super.onStart()
-        SocialAuthManager.getCurrentAccount().observe(this, Observer {
+        socialAuthManager.getCurrentAccount().observe(this, Observer {
             it.authProvider?.let { provider ->
                 findViewById<TextView>(R.id.text_auth_provider).text = getString(R.string.template_signed_in_with, provider.value)
             }

@@ -1,6 +1,7 @@
 package com.mlsdev.livedatasocialauth.library.smartlock
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
@@ -35,6 +36,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     private val status = MutableLiveData<Status>()
     private val account = MutableLiveData<AuthResult>()
     private var currentAccount: Account? = null
+    private var socialAuthManager: SocialAuthManager? = null
 
     private val credentialsApiClient: GoogleApiClient by lazy {
         GoogleApiClient.Builder(context!!)
@@ -144,7 +146,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     private fun handleRequestedGoogleAccountCredential(credential: Credential) {
         val googleAuthBuilder = GoogleAuth.Builder(activity!!)
         val options: SmartLockOptions? =
-            SocialAuthManager.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
+            socialAuthManager?.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
                 JsonParser.parseSmartLockOptions(json)?.let { options ->
                     if (options.requestEmail) googleAuthBuilder.requestEmail()
                     if (options.requestProfile) googleAuthBuilder.requestProfile()
@@ -187,7 +189,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
     private fun handleRequestedFacebookAccountCredential(credential: Credential) {
         val facebookAuthBuilder = FacebookAuth.Builder(activity!!)
         val options: SmartLockOptions? =
-            SocialAuthManager.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
+            socialAuthManager?.sharedPreferences?.getString(JsonParser.SMART_LOCK_OPTIONS_KEY, null)?.let { json ->
                 JsonParser.parseSmartLockOptions(json)?.let { options ->
                     if (options.requestEmail) facebookAuthBuilder.requestEmail()
                     if (options.requestProfile) facebookAuthBuilder.requestProfile()
@@ -223,7 +225,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 saveStatus.isSuccess -> {
                     credentialsApiClient.disconnect()
                     smartLockOptions?.let {
-                        SocialAuthManager.sharedPreferences?.edit()
+                        socialAuthManager?.sharedPreferences?.edit()
                             ?.putString(JsonParser.SMART_LOCK_OPTIONS_KEY, JsonParser.smartLockOptionsToJson(it))
                             ?.apply()
                     }
@@ -259,7 +261,7 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
         Auth.CredentialsApi.save(credentialsApiClient, credential).setResultCallback { saveStatus ->
             when {
                 saveStatus.isSuccess -> {
-                    SocialAuthManager.sharedPreferences?.edit()
+                    socialAuthManager?.sharedPreferences?.edit()
                         ?.putString(JsonParser.SMART_LOCK_OPTIONS_KEY, JsonParser.smartLockOptionsToJson(options))
                         ?.apply()
 
@@ -403,6 +405,11 @@ class SmartLockFragment : Fragment(), GoogleApiClient.ConnectionCallbacks {
                 currentAccount = null
             }
         }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        socialAuthManager = context?.let { SocialAuthManager(it) }
     }
 
 }

@@ -116,7 +116,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
     }
 
     private val signOutCallback = ResultCallback<com.google.android.gms.common.api.Status> { status ->
-        SocialAuthManager.removeCurrentAccount()
+        socialAuthManager?.removeCurrentAccount()
         googleApiClient.disconnect()
         statusLiveData.postValue(Status(status.isSuccess, status.statusMessage.toString(), status.statusCode))
     }
@@ -136,7 +136,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onConnectionFailed(result: ConnectionResult) {
-        SocialAuthManager.removeCurrentAccount()
+        socialAuthManager?.removeCurrentAccount()
         googleApiClient.disconnect()
         statusLiveData.postValue(Status(false, result.errorMessage.toString(), result.errorCode))
     }
@@ -162,7 +162,7 @@ class GoogleAuthFragment : AuthFragment(), GoogleApiClient.ConnectionCallbacks,
                 authProvider = AuthProvider.GOOGLE
             }
 
-            SocialAuthManager.saveAccount(account)
+            socialAuthManager?.saveAccount(account)
             saveCredentialAndPostAuthResult(account, IdentityProviders.GOOGLE)
 
         } else {
